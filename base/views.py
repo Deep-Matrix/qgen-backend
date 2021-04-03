@@ -56,13 +56,17 @@ def register(request):
 
 
 #get note
-@api_view(['GET'])
+@api_view(['POST'])
 @login_required
 @csrf_exempt
 def get_notes(request):
-	notes = Notes.objects.all()
+	json_data = request.data
+	user_id = json_data['user_id']
+	user = User.objects.get(id = user_id)
+	notes = Notes.objects.filter(user_id=user)
 	serializer = NoteSerializer(notes,many=True)
-	return JsonResponse(serializer.data,safe=False)
+	# return JsonResponse(serializer.data,safe=False)
+	return Response({'Message':"all notes", 'data': serializer.data},status=status.HTTP_200_OK)
 
 #add note
 @api_view(['POST'])
@@ -91,6 +95,7 @@ def delete_notes(request):
 		return Response({'Message':"Note has been deleted"},status=status.HTTP_200_OK)
 
 
+
 #update note
 @api_view(['POST'])
 @login_required
@@ -114,7 +119,13 @@ def get_questions(request):
 		json_data = request.data
 		note_id = json_data['note_id']
 		number_of_questions = json_data['number_of_questions']
+		# [props.showQuizPage.fib, props.showQuizPage.mcq, props.showQuizPage.tf]
+		types_of_questions = {"fib": json_data['types_of_questions'][0],
+								"mcq" : json_data['types_of_questions'][1],
+								"tf" : json_data['types_of_questions'][2]}
 		note = Notes.objects.get(id = note_id)
+		print(types_of_questions)
+		print("aagaya atleast yaha! ")
 		#url for ml server
 		ml_server_url = "localhost/questions/11"
 		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_questions': number_of_questions})
@@ -129,9 +140,11 @@ def get_questions(request):
 def get_image_content(request):
 	if request.method == 'POST':
 		json_data = request.data
-		number_of_questions = json_data['number_of_questions']
+		# number_of_questions = json_data['number_of_questions']
+		number_of_questions = 7
 		img_data = request.FILES['file'].read()
-		img_string = base64.b64encode(img_data)
+		print(img_data) 
+		img_string = base64.b64encode(img_data) 
 
 		#url for ml server image to text
 		ml_server_url = "localhost/questions/3"
