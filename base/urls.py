@@ -9,4 +9,6 @@ urlpatterns = [
     path('update_note',views.update_notes,name='update_notes'),
     path('get_questions',views.get_questions,name='get_questions'),
     path('get_image_content',views.get_image_content,name='get_image_content'),
+    path('get_summary',views.get_summary,name='get_summary'),
+    path('get_image_content_summary',views.get_image_content_summary,name='get_image_content_summary'),
 ]

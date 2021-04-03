@@ -165,7 +165,7 @@ def get_summary(request):
 # send text to summary generation flask, send this summary to frontend
 @api_view(['POST'])
 # @login_required
-def get_image_content(request):
+def get_image_content_summary(request):
 	if request.method == 'POST':
 		img_data = request.FILES['file'].read()
 		# print(img_data)
