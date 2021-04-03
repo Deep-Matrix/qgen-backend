@@ -128,7 +128,7 @@ def get_questions(request):
 		print("aagaya atleast yaha! ")
 		#url for ml server
 		ml_server_url = "localhost/questions/11"
-		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_questions': number_of_questions})
+		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_questions': number_of_questions, 'types_of_questions' : types_of_questions})
 		questions = json.loads(data.text)['questions']
 		return Response({'Message':"recieved all questions from text", 'data': questions},status=status.HTTP_200_OK)
 
