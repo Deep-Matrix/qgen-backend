@@ -120,9 +120,12 @@ def get_questions(request):
 		note_id = json_data['note_id']
 		number_of_questions = json_data['number_of_questions']
 		# [props.showQuizPage.fib, props.showQuizPage.mcq, props.showQuizPage.tf]
+
 		types_of_questions = {"fib": json_data['types_of_questions'][0],
 								"mcq" : json_data['types_of_questions'][1],
 								"tf" : json_data['types_of_questions'][2]}
+
+	
 		note = Notes.objects.get(id = note_id)
 		print(types_of_questions)
 		print("aagaya atleast yaha! ")
@@ -143,6 +146,13 @@ def get_image_content(request):
 		# number_of_questions = json_data['number_of_questions']
 		number_of_questions = 7
 		img_data = request.FILES['file'].read()
+		# types_of_questions = {"fib": json_data['types_of_questions'][0],
+		# 						"mcq" : json_data['types_of_questions'][1],
+		# 						"tf" : json_data['types_of_questions'][2]}
+
+		types_of_questions = {"fib": False,
+								"mcq" : True,
+								"tf" : True}
 		print(img_data) 
 		img_string = base64.b64encode(img_data) 
 
@@ -153,7 +163,7 @@ def get_image_content(request):
 
 		#url for ml server question generation
 		ml_server_url = "localhost/questions/14"
-		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_questions': number_of_questions})
+		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_questions': number_of_questions, 'types_of_questions' : types_of_questions})
 		questions = json.loads(data.text)['questions']
 		return Response({'Message':"recieved all questions", 'data': questions},status=status.HTTP_200_OK)
 
