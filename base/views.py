@@ -87,6 +87,21 @@ def delete_notes(request):
 		return Response({'Message':"Note has been deleted"},status=status.HTTP_200_OK)
 
 
+#update note
+@api_view(['POST'])
+@login_required
+@csrf_exempt
+def update_notes(request):
+	if request.method == 'POST':
+		json_data = request.data
+		note_id = json_data['note_id']
+		note = Notes.objects.get(id = note_id)
+		note.note_title = json_data['note_title']
+		note.content = json_data['note_content']
+		note.save()
+		return Response({'Message':"Note has been updated"},status=status.HTTP_200_OK)
+	
+
 # {
 # 	"email_id": "deepmatrix_user@gmail.com",
 # 	"password" : "deep@123",
@@ -121,3 +136,12 @@ def delete_notes(request):
 # 	"note_content" : "Note Content",
 # 	"user_id" : "2"
 # }
+
+
+# {
+# 	"note_id": "2",
+#  	"note_title" : "Hello",
+#  	"note_content" : "Note Content",
+# 	"user_id" : "2"
+# }
+
