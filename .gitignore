@@ -1,2 +1,5 @@
 config.py
 credentials.json
+db.sqlite3
+*.pyc
+*.pyo

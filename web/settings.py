@@ -24,11 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'psycopg2',
     'base',
-    'oauth2_provider',
     'corsheaders',
-
+    'jwt'
 ]
 
 MIDDLEWARE = [
