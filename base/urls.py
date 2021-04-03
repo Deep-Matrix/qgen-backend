@@ -11,4 +11,6 @@ urlpatterns = [
     path('get_image_content',views.get_image_content,name='get_image_content'),
     path('get_summary',views.get_summary,name='get_summary'),
     path('get_image_content_summary',views.get_image_content_summary,name='get_image_content_summary'),
+    path('get_flashcards',views.get_flashcards,name='get_flashcards'),
+    path('get_image_content_flashcards',views.get_image_content_flashcards,name='get_image_content_flashcards'),
 ]

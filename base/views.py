@@ -106,7 +106,7 @@ def update_notes(request):
 		return Response({'Message':"Note has been updated"},status=status.HTTP_200_OK)
 	
 
-#get questions from frontend pass to flask server then the questions genereated are passed to frontend again
+#get questions text from frontend pass to flask server then the questions genereated are passed to frontend again
 @api_view(['POST'])
 @login_required
 def get_questions(request):
@@ -116,7 +116,7 @@ def get_questions(request):
 		number_of_questions = json_data['number_of_questions']
 		note = Notes.objects.get(id = note_id)
 		#url for ml server
-		ml_server_url = "localhost/questions/1"
+		ml_server_url = "localhost/questions/11"
 		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_questions': number_of_questions})
 		questions = json.loads(data.text)['questions']
 		return Response({'Message':"recieved all questions from text", 'data': questions},status=status.HTTP_200_OK)
@@ -128,23 +128,21 @@ def get_questions(request):
 # @login_required
 def get_image_content(request):
 	if request.method == 'POST':
+		json_data = request.data
 		number_of_questions = json_data['number_of_questions']
-
 		img_data = request.FILES['file'].read()
-		# print(img_data)
 		img_string = base64.b64encode(img_data)
-		# print(img_string)
 
 		#url for ml server image to text
-		ml_server_url = "localhost/questions"
+		ml_server_url = "localhost/questions/3"
 		data = requests.post(ml_server_url, data = {'img_base64': img_string})
 		note_text = json.loads(data.text)['image_text']
+
 		#url for ml server question generation
-		ml_server_url = "localhost/questions/1"
+		ml_server_url = "localhost/questions/14"
 		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_questions': number_of_questions})
 		questions = json.loads(data.text)['questions']
 		return Response({'Message':"recieved all questions", 'data': questions},status=status.HTTP_200_OK)
-		# return Response({'Message':"got Base64"},status=status.HTTP_200_OK)
 
 
 #get note summary 
@@ -155,11 +153,13 @@ def get_summary(request):
 		json_data = request.data
 		note_id = json_data['note_id']
 		note = Notes.objects.get(id = note_id)
+
 		#url for ml server for summary
 		ml_server_url = "localhost/summary"
 		data = requests.post(ml_server_url, data = {'note_text': note.content})
 		summary = json.loads(data.text)['summary']
 		return Response({'Message':"recieved summary", 'data': summary},status=status.HTTP_200_OK)
+
 
 # get note from image, pass to ocr flask server get text, 
 # send text to summary generation flask, send this summary to frontend
@@ -168,19 +168,59 @@ def get_summary(request):
 def get_image_content_summary(request):
 	if request.method == 'POST':
 		img_data = request.FILES['file'].read()
-		# print(img_data)
 		img_string = base64.b64encode(img_data)
-		# print(img_string)
 
 		#url for ml server image to text
 		ml_server_url = "localhost/questions"
 		data = requests.post(ml_server_url, data = {'img_base64': img_string})
 		note_text = json.loads(data.text)['image_text']
+
 		#url for ml server image to text
 		ml_server_url = "localhost/summary"
 		data = requests.post(ml_server_url, data = {'note_text': note_text})
 		summary = json.loads(data.text)['summary']
 		return Response({'Message':"recieved summary from image", 'data': summary},status=status.HTTP_200_OK)
+
+
+#get text from frontend, pass to flask server, then the flashcards generated are passed to frontend again
+@api_view(['POST'])
+@login_required
+def get_flashcards(request):
+	if request.method == 'POST':
+		json_data = request.data
+		note_id = json_data['note_id']
+		number_of_flashcards = json_data['number_of_flashcards']
+		note = Notes.objects.get(id = note_id)
+
+		#url for ml server flashcards
+		ml_server_url = "localhost/questions/1"
+		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_flashcards': number_of_flashcards})
+		flashcards = json.loads(data.text)['flashcards']
+		return Response({'Message':"recieved all flashcards from text", 'data': flashcards},status=status.HTTP_200_OK)
+
+
+# get note from image, pass to ocr flask server get text, 
+# send text to flashcards generation flask, send this flashcardss to frontend
+@api_view(['POST'])
+# @login_required
+def get_image_content_flashcards(request):
+	if request.method == 'POST':
+		json_data = request.data
+		number_of_flashcards = json_data['number_of_flashcards']
+
+		img_data = request.FILES['file'].read()
+		img_string = base64.b64encode(img_data)
+
+		#url for ml server image to text
+		ml_server_url = "localhost/questions"
+		data = requests.post(ml_server_url, data = {'img_base64': img_string})
+		note_text = json.loads(data.text)['image_text']
+
+		#url for ml server flashcards generation
+		ml_server_url = "localhost/questions/1"
+		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_flashcards': number_of_flashcards})
+		flashcards = json.loads(data.text)['flashcards']
+		return Response({'Message':"recieved all flashcards", 'data': flashcards},status=status.HTTP_200_OK)
 
 
 
