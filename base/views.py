@@ -125,7 +125,7 @@ def get_questions(request):
 # get note from image, pass to ocr flask server get text, 
 # send text to question generation flask, send this questions to frontend
 @api_view(['POST'])
-# @login_required
+@login_required
 def get_image_content(request):
 	if request.method == 'POST':
 		json_data = request.data
@@ -164,7 +164,7 @@ def get_summary(request):
 # get note from image, pass to ocr flask server get text, 
 # send text to summary generation flask, send this summary to frontend
 @api_view(['POST'])
-# @login_required
+@login_required
 def get_image_content_summary(request):
 	if request.method == 'POST':
 		img_data = request.FILES['file'].read()
@@ -202,7 +202,7 @@ def get_flashcards(request):
 # get note from image, pass to ocr flask server get text, 
 # send text to flashcards generation flask, send this flashcardss to frontend
 @api_view(['POST'])
-# @login_required
+@login_required
 def get_image_content_flashcards(request):
 	if request.method == 'POST':
 		json_data = request.data
