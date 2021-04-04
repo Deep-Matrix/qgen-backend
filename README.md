@@ -9,7 +9,7 @@
 
 <h2 align='center'> About </h2>
 <p align='center'>
-Many times, we read our notes again and again, without ever getting any information inside our head. Havent you noticed that whenver there is a quiz, or whenever you take a test, you learn the material better? Hence, we have created an app, which used Machine Learning and Natural Language Processing to generate flashcards, quizzes, and summary from your notes! Moreover, we have three types of questions: MCQ, Fill in the blanks, and True or False questions to test you on your notes.
+Many times, we read our notes again and again, without ever getting any information inside our head. Haven't you noticed that whenever there is a quiz, or whenever you take a test, you learn the material better? Hence, we have created an app, which used Machine Learning and Natural Language Processing to generate flashcards, quizzes, and summary from your notes! Moreover, we have three types of questions: MCQ, Fill in the blanks, and True or False questions to test you on your notes.
 You can also upload handwritten notes to generate quizzes so that you can directly upload a photo and generate a quiz.
 </p>
 
