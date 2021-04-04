@@ -6,8 +6,6 @@
 &emsp;
 [![](https://img.shields.io/badge/IDE-Visual_Studio_Code-blue?style=for-the-badge&logo=visual-studio-code)](https://code.visualstudio.com/ "Visual Studio Code")
 &emsp;
-[![](https://img.shields.io/badge/Made_with-ReactJS-blue?style=for-the-badge&logo=ReactJs)](https://docs.python.org/2/library/sqlite3.html)
-&emsp;
 
 <h2 align='center'> About </h2>
 <p align='center'>
