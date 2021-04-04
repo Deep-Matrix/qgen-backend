@@ -23,15 +23,26 @@ You can also upload handwritten notes to generate quizzes so that you can direct
              
 -----------------------------------
 
+
 ### 🚀 Features
 
 <p align="left">
    <ul>
-      <li>Create Notes</li>
-      <li>Generate Questions</li>
-      <li>Generate Summary</li>
-      <li>Generate Flashcards</li>
-      <li>Generate questions from images</li>
+      <li>Add/Edit Notes📕</li>
+      <li>Based on your notes generate</li>
+      <ul>
+         <li>Quiz</li>   
+            <ul>
+               <li>MCQs 📝</li>
+               <li>True/False ✔️ ❎</li>
+               <li>Fill in the blanks ❓</li>   
+            </ul>
+         <li>Summary ✒️</li>
+         <li>Flashcards 🔖</li>
+         <li>Q/A from images 🚞</li>
+      </ul>
+      
+      
    </ul>
 </p>
 
