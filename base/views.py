@@ -11,7 +11,7 @@ import requests
 import json
 from django.views.decorators.csrf import csrf_exempt
 import base64
-
+from django.utils.html import strip_tags
 
 
 #auth
@@ -21,7 +21,7 @@ def login(request):
 		json_data = request.data
 		email_id = json_data['email_id']
 		password = json_data['password']
-		# password hash
+		# password hash 
 		users = User.objects.filter(email=email_id)
 		if not users:
 			return Response({'Message':"No user found in the database"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -33,7 +33,7 @@ def login(request):
 		user_serializer = UserSerializer([user],many=True)
 		return Response({'Message':"User has been logged in",'user':user_serializer.data,'token':token},status=status.HTTP_200_OK)
 	else:
-		return Response({'Message':"Wrong method"},status=status.HTTP_400_BAD_REQUEST)
+		return Response({'Message':"Wrong method"},status=status.HTTP_400_BAD_REQUEST) 
 
 
 @api_view(['POST'])
@@ -113,26 +113,29 @@ def update_notes(request):
 
 #get questions text from frontend pass to flask server then the questions genereated are passed to frontend again
 @api_view(['POST'])
-@login_required
+# @login_required
 def get_questions(request):
 	if request.method == 'POST':
+		print('aaya')
 		json_data = request.data
 		note_id = json_data['note_id']
 		number_of_questions = json_data['number_of_questions']
 		# [props.showQuizPage.fib, props.showQuizPage.mcq, props.showQuizPage.tf]
 
-		types_of_questions = {"fib": json_data['types_of_questions'][0],
-								"mcq" : json_data['types_of_questions'][1],
-								"tf" : json_data['types_of_questions'][2]}
+		types_of_questions = [json_data['types_of_questions'][0],
+								json_data['types_of_questions'][1],
+								json_data['types_of_questions'][2]] 
 
 	
 		note = Notes.objects.get(id = note_id)
 		print(types_of_questions)
 		print("aagaya atleast yaha! ")
 		#url for ml server
-		ml_server_url = "localhost/questions/11"
-		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_questions': number_of_questions, 'types_of_questions' : types_of_questions})
+		ml_server_url = "http://717830fd426d.ngrok.io/questions" 
+		print(note.content)
+		data = requests.post(ml_server_url, data = {'note_text': strip_tags(note.content), 'number_of_questions': number_of_questions, 'fib' : json_data['types_of_questions'][0], 'mcq' : json_data['types_of_questions'][1], 'tf' : json_data['types_of_questions'][2]})
 		questions = json.loads(data.text)['questions']
+		print(questions)
 		return Response({'Message':"recieved all questions from text", 'data': questions},status=status.HTTP_200_OK)
 
 
@@ -142,6 +145,7 @@ def get_questions(request):
 @login_required
 def get_image_content(request):
 	if request.method == 'POST':
+		print('aaya image')
 		json_data = request.data
 		# number_of_questions = json_data['number_of_questions']
 		number_of_questions = 7
@@ -153,24 +157,27 @@ def get_image_content(request):
 		types_of_questions = {"fib": False,
 								"mcq" : True,
 								"tf" : True}
-		print(img_data) 
-		img_string = base64.b64encode(img_data) 
+		# print(img_data) 
+		img_string = base64.b64encode(img_data)  
 
 		#url for ml server image to text
-		ml_server_url = "localhost/questions/3"
-		data = requests.post(ml_server_url, data = {'img_base64': img_string})
+		ml_server_url = "http://717830fd426d.ngrok.io/ocr"
+		data = requests.post(ml_server_url, data = {'img_base64': img_string})   
 		note_text = json.loads(data.text)['image_text']
-
+		print(note_text)
+		new_note = strip_tags(note_text[0]['text'])
 		#url for ml server question generation
-		ml_server_url = "localhost/questions/14"
-		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_questions': number_of_questions, 'types_of_questions' : types_of_questions})
+		ml_server_url = "http://717830fd426d.ngrok.io/questions"
+		data = requests.post(ml_server_url, data = {'note_text': new_note, 'number_of_questions': number_of_questions,  'fib' : 'False' , 'mcq' : 'True', 'tf' : 'True'})
 		questions = json.loads(data.text)['questions']
+		print(json.loads(data.text))  
+		print(questions) 
 		return Response({'Message':"recieved all questions", 'data': questions},status=status.HTTP_200_OK)
 
 
 #get note summary 
 @api_view(['POST'])
-@login_required
+# @login_required
 def get_summary(request):
 	if request.method == 'POST':
 		json_data = request.data
@@ -178,10 +185,10 @@ def get_summary(request):
 		note = Notes.objects.get(id = note_id)
 
 		#url for ml server for summary
-		ml_server_url = "localhost/summary"
-		data = requests.post(ml_server_url, data = {'note_text': note.content})
+		ml_server_url = "http://717830fd426d.ngrok.io/summarize"
+		data = requests.post(ml_server_url, data = {'note_text': strip_tags(note.content)})
 		summary = json.loads(data.text)['summary']
-		return Response({'Message':"recieved summary", 'data': summary},status=status.HTTP_200_OK)
+		return Response({'Message':"recieved summary", 'data': summary},status=status.HTTP_200_OK) 
 
 
 # get note from image, pass to ocr flask server get text, 
@@ -194,12 +201,12 @@ def get_image_content_summary(request):
 		img_string = base64.b64encode(img_data)
 
 		#url for ml server image to text
-		ml_server_url = "localhost/questions"
+		ml_server_url = "http://717830fd426d.ngrok.io/ocr"
 		data = requests.post(ml_server_url, data = {'img_base64': img_string})
 		note_text = json.loads(data.text)['image_text']
 
 		#url for ml server image to text
-		ml_server_url = "localhost/summary"
+		ml_server_url = "http://717830fd426d.ngrok.io/summary"
 		data = requests.post(ml_server_url, data = {'note_text': note_text})
 		summary = json.loads(data.text)['summary']
 		return Response({'Message':"recieved summary from image", 'data': summary},status=status.HTTP_200_OK)
@@ -207,18 +214,19 @@ def get_image_content_summary(request):
 
 #get text from frontend, pass to flask server, then the flashcards generated are passed to frontend again
 @api_view(['POST'])
-@login_required
+# @login_required
 def get_flashcards(request):
 	if request.method == 'POST':
 		json_data = request.data
 		note_id = json_data['note_id']
-		number_of_flashcards = json_data['number_of_flashcards']
-		note = Notes.objects.get(id = note_id)
-
+		number_of_flashcards = json_data['number_of_flashcards'] 
+		note = Notes.objects.get(id = note_id) 
+		
 		#url for ml server flashcards
-		ml_server_url = "localhost/questions/1"
+		ml_server_url = "http://717830fd426d.ngrok.io/flashcards"
 		data = requests.post(ml_server_url, data = {'note_text': note.content, 'number_of_flashcards': number_of_flashcards})
 		flashcards = json.loads(data.text)['flashcards']
+		print(flashcards)
 		return Response({'Message':"recieved all flashcards from text", 'data': flashcards},status=status.HTTP_200_OK)
 
 
@@ -235,12 +243,12 @@ def get_image_content_flashcards(request):
 		img_string = base64.b64encode(img_data)
 
 		#url for ml server image to text
-		ml_server_url = "localhost/questions"
+		ml_server_url = "http://717830fd426d.ngrok.io/ocr"
 		data = requests.post(ml_server_url, data = {'img_base64': img_string})
 		note_text = json.loads(data.text)['image_text']
 
 		#url for ml server flashcards generation
-		ml_server_url = "localhost/questions/1"
+		ml_server_url = "http://717830fd426d.ngrok.io/flashcards"
 		data = requests.post(ml_server_url, data = {'note_text': note_text, 'number_of_flashcards': number_of_flashcards})
 		flashcards = json.loads(data.text)['flashcards']
 		return Response({'Message':"recieved all flashcards", 'data': flashcards},status=status.HTTP_200_OK)
