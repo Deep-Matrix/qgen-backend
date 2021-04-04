@@ -15,12 +15,12 @@ You can also upload handwritten notes to generate quizzes so that you can direct
 
 -----------------------------------
 
-### Demo
+### Preview
 
 <p align="center">
-<img src ="./assets/website.gif" width = 500px>
+  <img src ="./assets/qgen-final.gif" width = 900px>
 </p>
-
+             
 -----------------------------------
 
 ### 🚀 Features
