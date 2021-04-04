@@ -54,7 +54,7 @@ A step by step series of examples that tell you how to get a development env run
 In your cmd:
 
 ```
-git clone https://github.com/Deep-Matrix/qgen-frontend
+git clone https://github.com/Deep-Matrix/qgen-backend
 ```
 
 Then,
